@@ -19,7 +19,7 @@ async function writeClientCode({
 }): Promise<void> {
   if (existsSync(destinationPath)) {
     if (onExistingFileConflict) {
-      const existingFile = await promises.readFile(destinationPath, {
+      let existingFile = await promises.readFile(destinationPath, {
         encoding: 'utf-8',
       });
       await onExistingFileConflict(existingFile);
@@ -49,13 +49,13 @@ async function writeSchemaCode({
 }): Promise<void> {
   await waitFunctions(
     async () => {
-      const schemaPath = resolve(
+      let schemaPath = resolve(
         dirname(destinationPath),
         isJavascriptOutput ? './schema.generated.d.ts' : './schema.generated.ts'
       );
 
       if (existsSync(schemaPath)) {
-        const existingCode = await promises.readFile(schemaPath, {
+        let existingCode = await promises.readFile(schemaPath, {
           encoding: 'utf-8',
         });
 
@@ -68,13 +68,13 @@ async function writeSchemaCode({
     },
     async () => {
       if (isJavascriptOutput) {
-        const schemaPath = resolve(
+        let schemaPath = resolve(
           dirname(destinationPath),
           './schema.generated.js'
         );
 
         if (existsSync(schemaPath)) {
-          const existingCode = await promises.readFile(schemaPath, {
+          let existingCode = await promises.readFile(schemaPath, {
             encoding: 'utf-8',
           });
 
@@ -96,12 +96,12 @@ export async function writeGenerate(
   onExistingFileConflict?: OnExistingFileConflict,
   transformsGenerate?: TransformSchemaOptions
 ) {
-  const isJavascriptOutput =
+  let isJavascriptOutput =
     configuration.javascriptOutput ?? defaultConfig.javascriptOutput;
 
   if (isJavascriptOutput) {
     if (!destinationPath.endsWith('.js')) {
-      const err = Error(
+      let err = Error(
         'You have to specify the ".js" extension, instead, it received: "' +
           destinationPath +
           '"'
@@ -112,7 +112,7 @@ export async function writeGenerate(
       throw err;
     }
   } else if (!destinationPath.endsWith('.ts')) {
-    const err = Error(
+    let err = Error(
       'You have to specify the ".ts" extension, instead, it received: "' +
         destinationPath +
         '"'
@@ -125,7 +125,7 @@ export async function writeGenerate(
 
   destinationPath = resolve(destinationPath);
 
-  const [{ clientCode, schemaCode, javascriptSchemaCode }] = await Promise.all([
+  let [{ clientCode, schemaCode, javascriptSchemaCode }] = await Promise.all([
     generate(schema, configuration, transformsGenerate),
     promises.mkdir(dirname(destinationPath), { recursive: true }),
   ]);
