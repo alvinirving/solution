@@ -1,0 +1,63 @@
+{
+  "name": "@gqty/subscriptions",
+  "version": "3.0.5",
+  "private": true,
+  "homepage": "https://gqty.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gqty-dev/gqty.git"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.mjs",
+      "require": "./dist/*.js"
+    }
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "bob-esbuild build",
+    "dev": "bob-esbuild watch",
+    "prepare": "bob-esbuild build",
+    "postpublish": "gh-release",
+    "start": "bob-esbuild watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "isomorphic-ws": "^5.0.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "@types/ws": "^8.5.14",
+    "bob-esbuild-cli": "^4.0.0",
+    "gqty": "workspace:^",
+    "graphql": "^16.10.0",
+    "test-utils": "workspace:^",
+    "typescript": "^5.7.3"
+  },
+  "peerDependencies": {
+    "gqty": "workspace:^3.4.1",
+    "graphql": "*"
+  },
+  "peerDependenciesMeta": {
+    "graphql": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "directory": "dist"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "name": "@gqty/cli",
+  "version": "4.2.5",
+  "description": "Interactive codegen for GQty",
+  "keywords": [
+    "client",
+    "codegen",
+    "gqty",
+    "graphql",
+    "interactive",
+    "reactive"
+  ],
+  "homepage": "https://gqty.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gqty-dev/gqty.git"
+  },
+  "license": "MIT",
+  "author": "PabloSzx <pablosaez1995@gmail.com>",
+  "maintainers": [
+    "Vicary Archangel <vicary.archangel@member.mensa.org>"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./envelop": {
+      "types": "./dist/envelop.d.ts",
+      "import": "./dist/envelop.mjs",
+      "require": "./dist/envelop.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsx build.ts",
+    "prepare": "pnpm build",
+    "postpublish": "gh-release",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:watch-coverage": "rm -rf coverage && mkdir -p coverage/lcov-report && concurrently --raw \"jest --watchAll\" \"pnpm dlx serve -l 8787 coverage/lcov-report\" \"pnpm dlx wait-on tcp:8787 coverage/lcov-report/index.html && curl http://localhost:8787\""
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        {
+          "fixStyle": "inline-type-imports"
+        }
+      ],
+      "@typescript-eslint/no-import-type-side-effects": "error"
+    },
+    "ignorePatterns": [
+      "node_modules/**",
+      "**/*.js",
+      "**/*.test.ts"
+    ]
+  },
+  "dependencies": {
+    "@commander-js/extra-typings": "^13.1.0",
+    "@graphql-codegen/core": "^4.0.2",
+    "@graphql-codegen/typescript": "^4.1.4",
+    "@graphql-tools/utils": "^10.8.1",
+    "@graphql-tools/wrap": "^10.0.29",
+    "@inquirer/prompts": "^7.3.2",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "cosmiconfig": "^9.0.0",
+    "cross-fetch": "^4.1.0",
+    "fast-glob": "^3.3.3",
+    "gqty": "workspace:^",
+    "graphql": "^16.10.0",
+    "lodash-es": "^4.17.21",
+    "micromatch": "^4.0.8",
+    "prettier": "^2.8.8"
+  },
+  "devDependencies": {
+    "@pnpm/types": "^1000.1.1",
+    "@types/lodash-es": "^4.17.12",
+    "@types/micromatch": "^4.0.9",
+    "@types/node": "^22.13.4",
+    "@types/prettier": "^2.7.3",
+    "@typescript-eslint/eslint-plugin": "^8.24.1",
+    "@typescript-eslint/parser": "^8.24.1",
+    "eslint": "^9.20.1",
+    "p-lazy": "^3.1.0",
+    "test-utils": "workspace:^",
+    "tmp-promise": "^3.0.3",
+    "typescript": "^5.7.3"
+  },
+  "peerDependencies": {
+    "trading-signals": "^6.1.0"
+  },
+  "peerDependenciesMeta": {
+    "trading-signals": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "directory": "dist"
+  }
+}

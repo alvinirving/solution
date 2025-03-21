@@ -1,0 +1,26 @@
+{
+  "name": "example-vite-react",
+  "version": "0.0.0-development",
+  "private": true,
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite",
+    "generate": "gqty generate",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@gqty/cli": "workspace:^",
+    "@gqty/react": "workspace:^",
+    "@react-hookz/web": "^24.0.4",
+    "gqty": "workspace:^",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.1.1"
+  }
+}

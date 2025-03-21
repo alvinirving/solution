@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "declaration": false,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "noEmit": true,
+    "strict": true
+  },
+  "exclude": [],
+  "include": ["**/*.ts", "**/*.tsx"]
+}

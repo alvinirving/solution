@@ -1,0 +1,73 @@
+{
+  "name": "test-utils",
+  "version": "0.2.4",
+  "private": true,
+  "license": "MIT",
+  "author": "PabloSzx <pablosaez1995@gmail.com>",
+  "maintainers": [
+    "Vicary Archangel <vicary.archangel@member.mensa.org>"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.mjs",
+      "require": "./dist/*.js"
+    },
+    "./jest.config.js": "./jest.config.js"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "src/index.d.ts",
+  "bin": {
+    "jest-test": "bin/jest-test.js"
+  },
+  "scripts": {
+    "build": "tsx build.ts",
+    "prepare": "pnpm build",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config local.jest.config.js"
+  },
+  "dependencies": {
+    "@graphql-ez/fastify": "^0.12.1",
+    "@graphql-ez/fastify-testing": "^0.4.1",
+    "@graphql-ez/plugin-codegen": "^0.8.1",
+    "@graphql-ez/plugin-schema": "^0.9.1",
+    "@graphql-tools/executor-http": "^1.2.5",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@types/jest": "^29.5.14",
+    "cross-env": "^7.0.3",
+    "fastify": "^5.2.1",
+    "gqty": "workspace:^",
+    "graphql": "^16.10.0",
+    "graphql-ez": "^0.16.1",
+    "graphql-scalars": "^1.24.1",
+    "graphql-ws": "^5.16.2",
+    "graphql-yoga": "^5.12.0",
+    "jest": "^29.7.0",
+    "jest-watch-typeahead": "^2.2.2",
+    "wait-for-expect": "^3.0.2"
+  },
+  "devDependencies": {
+    "@graphql-ez/plugin-websockets": "^0.11.3",
+    "@jest/types": "^29.6.3",
+    "@types/node": "^22.13.4",
+    "typescript": "^5.7.3"
+  },
+  "peerDependencies": {
+    "graphql": "*"
+  },
+  "peerDependenciesMeta": {
+    "graphql": {
+      "optional": true
+    }
+  },
+  "gqty": {
+    "scalarTypes": {
+      "Date": "string"
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "@gqty/solid",
+  "version": "0.2.3",
+  "private": false,
+  "description": "The No-GraphQL Client for React",
+  "keywords": [
+    "cache",
+    "client",
+    "gqty",
+    "graphql",
+    "reactive",
+    "solid",
+    "state"
+  ],
+  "homepage": "https://gqty.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gqty-dev/gqty.git"
+  },
+  "license": "MIT",
+  "author": "Vicary Archangel <vicary.archangel@member.mensa.org>",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs",
+      "require": "./index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsx build.ts",
+    "prepare": "pnpm build",
+    "postpublish": "gh-release",
+    "test": "vitest --no-watch"
+  },
+  "dependencies": {
+    "debounce-microtasks": "^0.1.8",
+    "p-defer": "^3.0.0"
+  },
+  "devDependencies": {
+    "@solidjs/testing-library": "^0.8.10",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitest/coverage-v8": "^3.0.6",
+    "jsdom": "^26.0.0",
+    "test-utils": "workspace:^",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.1",
+    "vite-plugin-solid": "^2.11.2",
+    "vitest": "^3.0.6"
+  },
+  "peerDependencies": {
+    "gqty": "workspace:^3.4.1",
+    "solid-js": "^1.9.4"
+  },
+  "peerDependenciesMeta": {
+    "graphql-sse": {
+      "optional": true
+    },
+    "graphql-ws": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=16 <=23"
+  },
+  "publishConfig": {
+    "directory": "dist"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "name": "@gqty/logger",
+  "version": "3.0.6",
+  "description": "A debug logger for GQty",
+  "homepage": "https://gqty.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gqty-dev/gqty.git"
+  },
+  "license": "MIT",
+  "author": "PabloSzx <pablosaez1995@gmail.com>",
+  "maintainers": [
+    "Vicary Archangel <vicary.archangel@member.mensa.org>"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.mjs",
+      "require": "./dist/*.js"
+    }
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "bob-esbuild build",
+    "dev": "bob-esbuild watch",
+    "prepare": "bob-esbuild build",
+    "postpublish": "gh-release",
+    "start": "bob-esbuild watch",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "prettier": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "bob-esbuild-cli": "^4.0.0",
+    "gqty": "workspace:^",
+    "jest": "^29.7.0",
+    "test-utils": "workspace:^",
+    "typescript": "^5.7.3"
+  },
+  "peerDependencies": {
+    "gqty": "workspace:^3.4.1"
+  },
+  "engines": {
+    "node": "^12.20.0 || >=14.13.0"
+  },
+  "publishConfig": {
+    "directory": "dist"
+  }
+}
