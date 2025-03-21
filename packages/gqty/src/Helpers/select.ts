@@ -15,7 +15,7 @@ export function select(
    */
   onNext?: (node: CacheNode, path: string[]) => CacheNode
 ): CacheNode {
-  const probedNode = onNext ? onNext(node, path) : node;
+  let probedNode = onNext ? onNext(node, path) : node;
 
   if (path.length === 0) {
     return node;
@@ -29,7 +29,7 @@ export function select(
     return probedNode.map((item) => select(item, path, onNext));
   }
 
-  const [key, ...rest] = path;
+  let [key, ...rest] = path;
 
   return select(probedNode[key], rest, onNext);
 }
