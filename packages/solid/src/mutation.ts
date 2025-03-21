@@ -16,7 +16,7 @@ export type CreateMutation<TSchema extends BaseGeneratedSchema> = <
 
 export type CreateMutationOptions = CommonOptions & DefaultOptions;
 
-export const createMutation =
+export let createMutation =
   <TSchema extends BaseGeneratedSchema>(
     client: Client<TSchema>,
     clientOptions?: SolidClientOptions
