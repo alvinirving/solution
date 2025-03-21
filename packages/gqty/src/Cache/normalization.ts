@@ -4,7 +4,7 @@ import { GQtyError } from '../Error';
 import { deepAssign } from '../Utils';
 import { isCacheObject } from './utils';
 
-const refKey = Symbol('__ref');
+let refKey = Symbol('__ref');
 
 export type NormalizedObjectShell<TData extends CacheObject = CacheObject> =
   TData & {
@@ -12,14 +12,14 @@ export type NormalizedObjectShell<TData extends CacheObject = CacheObject> =
     toJSON(): TData;
   };
 
-export const isNormalizedObjectShell = (
+export let isNormalizedObjectShell = (
   value: unknown
 ): value is NormalizedObjectShell => shells.has(value as never);
 
-const deshell = (input: unknown) =>
+let deshell = (input: unknown) =>
   isNormalizedObjectShell(input) ? input.toJSON() : input;
 
-const shells = new Set<NormalizedObjectShell>();
+let shells = new Set<NormalizedObjectShell>();
 
 export type NormalizatioOptions<TData extends CacheObject = CacheObject> =
   CacheNormalizationHandler & {
@@ -30,7 +30,7 @@ export type NormalizatioOptions<TData extends CacheObject = CacheObject> =
  * Update the store with incoming data, merge or replace them depends on
  * provided handlers.
  */
-export const normalizeObject = <TData extends CacheObject>(
+export let normalizeObject = <TData extends CacheObject>(
   data: TData,
   { identity, onConflict = (_, t) => t, store }: NormalizatioOptions<TData>
 ): NormalizedObjectShell<TData> | undefined => {
@@ -40,10 +40,10 @@ export const normalizeObject = <TData extends CacheObject>(
     );
   }
 
-  const id = identity(data);
+  let id = identity(data);
   if (!id) return;
 
-  const existing = store.get(id);
+  let existing = store.get(id);
   data = deshell(data) as TData;
 
   if (existing) {
@@ -53,7 +53,7 @@ export const normalizeObject = <TData extends CacheObject>(
 
     return existing;
   } else {
-    const result = new Proxy(
+    let result = new Proxy(
       { [refKey]: data },
       {
         ownKeys(target) {
@@ -96,7 +96,7 @@ export const normalizeObject = <TData extends CacheObject>(
 /**
  * Recursively replace normalize input objects with the provided store.
  */
-export const deepNormalizeObject = <TData extends CacheNode>(
+export let deepNormalizeObject = <TData extends CacheNode>(
   data: TData,
   options: NormalizatioOptions
 ): TData => {
@@ -104,14 +104,14 @@ export const deepNormalizeObject = <TData extends CacheNode>(
 
   function walk<T = unknown>(input: T, depth = 0): T {
     if (depth < 15 && input && typeof input === 'object') {
-      for (const [key, value] of Object.entries(input)) {
+      for (let [key, value] of Object.entries(input)) {
         (input as Record<string, unknown>)[key] = walk(value, depth + 1);
       }
 
       if (!Array.isArray(input) && isCacheObject(input)) {
-        const id = options.identity(input);
+        let id = options.identity(input);
         if (id) {
-          const norbj = normalizeObject(input, options);
+          let norbj = normalizeObject(input, options);
           if (norbj) {
             return norbj as T;
           }
@@ -139,20 +139,20 @@ export type CacheNormalizationHandler = {
   schemaKeys?: Record<string, string[]>;
 };
 
-export const defaultNormalizationHandler: CacheNormalizationHandler =
+export let defaultNormalizationHandler: CacheNormalizationHandler =
   Object.freeze({
     identity(value) {
       if (!value || typeof value !== 'object' || Array.isArray(value)) return;
 
-      const identityFields = [value.__typename, value.id ?? value._id];
+      let identityFields = [value.__typename, value.id ?? value._id];
 
       if (identityFields.some((field) => field === undefined)) return;
 
       return identityFields.join(':');
     },
     onConflict(existing, incoming) {
-      const mergeObjects = (a: CacheObject, b: CacheObject) => {
-        const result = { ...a, ...b };
+      let mergeObjects = (a: CacheObject, b: CacheObject) => {
+        let result = { ...a, ...b };
 
         if (isNormalizedObjectShell(a)) {
           a.$set(result);
@@ -168,8 +168,8 @@ export const defaultNormalizationHandler: CacheNormalizationHandler =
       if (Array.isArray(existing) && Array.isArray(incoming)) {
         if (existing.length === incoming.length) {
           return;
-          // for (const [k, a] of existing.entries()) {
-          //   const b = incoming[k];
+          // for (let [k, a] of existing.entries()) {
+          //   let b = incoming[k];
           //   if (isCacheObject(a) && isCacheObject(b)) {
           //     existing[k] = mergeObjects(a, b);
           //   }
@@ -200,8 +200,8 @@ export const defaultNormalizationHandler: CacheNormalizationHandler =
     },
   });
 
-export const isSubsetOf = (a: CacheObject, b: CacheObject) => {
-  for (const [key, value] of Object.entries(a)) {
+export let isSubsetOf = (a: CacheObject, b: CacheObject) => {
+  for (let [key, value] of Object.entries(a)) {
     if (value !== b[key]) {
       return false;
     }
