@@ -1,8 +1,8 @@
 import { GraphQLError, type ExecutionResult } from 'graphql';
 import { GQtyError } from '../Error';
 
-export const defaultResponseHandler = async (response: Response) => {
-  const result = await parseResponse(response);
+export let defaultResponseHandler = async (response: Response) => {
+  let result = await parseResponse(response);
 
   assertExecutionResult(result);
 
@@ -11,8 +11,8 @@ export const defaultResponseHandler = async (response: Response) => {
   return result;
 };
 
-export const parseResponse = async (response: Response) => {
-  const text = await response.text().then((text) => text.trim() || null);
+export let parseResponse = async (response: Response) => {
+  let text = await response.text().then((text) => text.trim() || null);
 
   if (response.status >= 400) {
     throw new GQtyError(
@@ -29,7 +29,7 @@ export const parseResponse = async (response: Response) => {
   }
 
   try {
-    const result = JSON.parse(text);
+    let result = JSON.parse(text);
 
     if (Array.isArray(result?.errors)) {
       result.errors = result.errors.map(
@@ -59,10 +59,10 @@ export function assertExecutionResult(
   }
 }
 
-export const isExecutionResult = (input: unknown): input is ExecutionResult => {
+export let isExecutionResult = (input: unknown): input is ExecutionResult => {
   if (typeof input !== 'object' || input === null) return false;
 
-  const value = input as Record<string, unknown>;
+  let value = input as Record<string, unknown>;
 
   return (
     'data' in value ||
@@ -71,7 +71,7 @@ export const isExecutionResult = (input: unknown): input is ExecutionResult => {
   );
 };
 
-export const handleResponseErrors = (result: ExecutionResult) => {
+export let handleResponseErrors = (result: ExecutionResult) => {
   if (result.errors?.length) {
     throw GQtyError.fromGraphQLErrors(result.errors);
   }
