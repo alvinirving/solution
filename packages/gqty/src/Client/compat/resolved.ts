@@ -94,7 +94,7 @@ export interface LegacyResolveOptions<TData> {
  * while `resolved()` exposes callbacks, letting subcriptions outlive the
  * promise.
  */
-export const createLegacyResolved = <
+export let createLegacyResolved = <
   TSchema extends BaseGeneratedSchema = BaseGeneratedSchema,
 >({
   cache,
@@ -105,7 +105,7 @@ export const createLegacyResolved = <
   resolvers: { createResolver },
   subscribeLegacySelections,
 }: CreateLegacyMethodOptions<TSchema>): LegacyResolved => {
-  const resolved: LegacyResolved = async <TData = unknown>(
+  let resolved: LegacyResolved = async <TData = unknown>(
     fn: () => TData,
     {
       fetchOptions,
@@ -121,21 +121,21 @@ export const createLegacyResolved = <
       retry = retryPolicy,
     }: LegacyResolveOptions<TData> = {}
   ) => {
-    const { context, selections } = createResolver({
+    let { context, selections } = createResolver({
       cachePolicy: noCache ? 'no-store' : refetch ? 'no-cache' : 'default',
       operationName,
     });
-    const unsubscribe = subscribeLegacySelections((selection, cache) => {
+    let unsubscribe = subscribeLegacySelections((selection, cache) => {
       context.select(selection, cache);
       onSelection?.(convertSelection(selection));
     });
-    const resolutionCache = refetch ? cache : context.cache;
-    const targetCaches = noCache
+    let resolutionCache = refetch ? cache : context.cache;
+    let targetCaches = noCache
       ? [context.cache]
       : refetch
         ? [context.cache, cache]
         : [cache];
-    const dataFn = () => {
+    let dataFn = () => {
       globalContext.cache = resolutionCache;
 
       try {
@@ -147,7 +147,7 @@ export const createLegacyResolved = <
 
     context.shouldFetch ||= noCache || refetch;
 
-    const data = dataFn();
+    let data = dataFn();
 
     unsubscribe();
 
@@ -175,7 +175,7 @@ export const createLegacyResolved = <
 
     {
       // Subscriptions
-      const unsubscribe = subscribeSelections(
+      let unsubscribe = subscribeSelections(
         new Set([...selections].filter((s) => s.root.key === 'subscription')),
         ({ data, error, extensions }) => {
           if (data) {
