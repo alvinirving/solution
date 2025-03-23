@@ -57,7 +57,7 @@ export type SolidClient<Schema extends BaseGeneratedSchema> = {
 // Export the types to prevent tsc from removing the imports
 export type { BaseGeneratedSchema, Client };
 
-export const createSolidClient = <Schema extends BaseGeneratedSchema>(
+export let createSolidClient = <Schema extends BaseGeneratedSchema>(
   client: Client<Schema>,
   options?: SolidClientOptions
 ): SolidClient<Schema> => {
