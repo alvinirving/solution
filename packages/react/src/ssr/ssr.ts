@@ -44,24 +44,24 @@ export interface PrepareReactRender {
   }>;
 }
 
-const IS_SERVER = typeof window === 'undefined';
+let IS_SERVER = typeof window === 'undefined';
 
 export function createSSRHelpers<TSchema extends BaseGeneratedSchema>(
   { hydrateCache, prepareRender, query, refetch }: GQtyClient<TSchema>,
   { defaults: { refetchAfterHydrate } }: ReactClientOptionsWithDefaults
 ) {
-  const prepareReactRender: PrepareReactRender =
+  let prepareReactRender: PrepareReactRender =
     async function prepareReactRender(element: ReactNode) {
-      const majorVersion = +version.split('.')[0];
+      let majorVersion = +version.split('.')[0];
 
       if (majorVersion >= 18) {
-        const { renderToPipeableStream, renderToReadableStream } = await import(
+        let { renderToPipeableStream, renderToReadableStream } = await import(
           'react-dom/server'
         );
 
         if (renderToReadableStream !== undefined) {
           return prepareRender(async () => {
-            const stream = await renderToReadableStream(element);
+            let stream = await renderToReadableStream(element);
 
             await stream.allReady;
           });
@@ -77,13 +77,13 @@ export function createSSRHelpers<TSchema extends BaseGeneratedSchema>(
           );
         }
       } else {
-        const ssrPrepass = getDefault(await import('react-ssr-prepass'));
+        let ssrPrepass = getDefault(await import('react-ssr-prepass'));
 
         return prepareRender(() => ssrPrepass(element));
       }
     };
 
-  const useHydrateCache: UseHydrateCache = function useHydrateCache({
+  let useHydrateCache: UseHydrateCache = function useHydrateCache({
     cacheSnapshot,
     shouldRefetch = refetchAfterHydrate,
   }: UseHydrateCacheOptions) {
