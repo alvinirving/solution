@@ -5,7 +5,7 @@ import { __innerState } from './innerState';
 
 __innerState.isCLI = true;
 
-declare const __VERSION__: string;
+declare let __VERSION__: string;
 
 deps.program.version(__VERSION__);
 
