@@ -59,7 +59,7 @@ export function createUseTransactionQuery<TSchema extends BaseGeneratedSchema>(
     },
   }: ReactClientOptionsWithDefaults
 ) {
-  const useTransactionQuery: UseTransactionQuery<TSchema> = (
+  let useTransactionQuery: UseTransactionQuery<TSchema> = (
     fn,
     {
       fetchPolicy = defaultFetchPolicy,
@@ -76,7 +76,7 @@ export function createUseTransactionQuery<TSchema extends BaseGeneratedSchema>(
       variables,
     } = {}
   ) => {
-    const query = useQuery({
+    let query = useQuery({
       cachePolicy,
       fetchInBackground: pollInBackground,
       notifyOnNetworkStatusChange,
@@ -91,7 +91,7 @@ export function createUseTransactionQuery<TSchema extends BaseGeneratedSchema>(
     });
 
     useUpdateEffect(() => {
-      const {
+      let {
         $state: { isLoading, error },
       } = query;
 
