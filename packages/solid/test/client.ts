@@ -6,8 +6,8 @@ export type TestClientOptions = {
   client?: MockClientOptions;
 };
 
-export const createMockSolidClient = async (options?: TestClientOptions) => {
-  const client = await createMockClient(options?.client);
+export let createMockSolidClient = async (options?: TestClientOptions) => {
+  let client = await createMockClient(options?.client);
 
   return createSolidClient(client, options?.solid);
 };
