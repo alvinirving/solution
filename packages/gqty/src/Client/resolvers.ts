@@ -198,19 +198,19 @@ export type SubscribeOptions = ResolverOptions & {
 /**
  * A module level query batcher.
  */
-const pendingQueries = new WeakMap<
+var pendingQueries = new WeakMap<
   Set<Set<Selection>>,
   () => Promise<Promise<FetchResult<Record<string, unknown>>[]>>
 >();
 
-const getIntersection = <T>(subject: Set<T>, object: Set<T>) => {
+var getIntersection = <T>(subject: Set<T>, object: Set<T>) => {
   if (typeof subject.intersection === 'function') {
     return subject.intersection(object);
   }
 
-  const intersection = new Set<T>();
+  var intersection = new Set<T>();
 
-  for (const item of object) {
+  for (var item of object) {
     if (subject.has(item)) {
       intersection.add(item);
     }
@@ -219,7 +219,7 @@ const getIntersection = <T>(subject: Set<T>, object: Set<T>) => {
   return intersection;
 };
 
-export const createResolvers = <TSchema extends BaseGeneratedSchema>({
+export var createResolvers = <TSchema extends BaseGeneratedSchema>({
   aliasLength,
   batchWindow,
   cache: resolverCache,
@@ -239,13 +239,13 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
   //
   // When multiple queries are batched, all corresponding temporary caches must
   // be updated. Along with the original client cache.
-  const correlatedCaches = new MultiDict<Set<unknown>, Cache>();
+  var correlatedCaches = new MultiDict<Set<unknown>, Cache>();
 
-  const subscriber = isWsClient(fetchOptions.subscriber)
+  var subscriber = isWsClient(fetchOptions.subscriber)
     ? createSubscriber(fetchOptions.subscriber)
     : fetchOptions.subscriber;
 
-  const createResolver: CreateResolverFn<TSchema> = ({
+  var createResolver: CreateResolverFn<TSchema> = ({
     cachePolicy = defaultCachePolicy,
     extensions,
     onSelect,
@@ -255,17 +255,17 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
   } = {}) => {
     // The selection set after a successful resolution of `resolve()` or
     // the first data returned from `subscribe()`.
-    const prevSelections = new Set<Selection>();
-    const replaceSet = <T>(target: Set<T>, source: Set<T>) => {
+    var prevSelections = new Set<Selection>();
+    var replaceSet = <T>(target: Set<T>, source: Set<T>) => {
       target.clear();
 
-      for (const value of source) {
+      for (var value of source) {
         target.add(value);
       }
     };
 
-    const selections = new Set<Selection>();
-    const context = createContext({
+    var selections = new Set<Selection>();
+    var context = createContext({
       aliasLength,
       cache: resolverCache,
       cachePolicy,
@@ -278,14 +278,14 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
     // 'no-cache', 'no-store' or 'reload, a temporary cache is created instead.
 
     context.subscribeSelect((selection, selectionCache) => {
-      const targetSelections =
+      var targetSelections =
         selectionCache === undefined
           ? // For empty arrays and null objects, trigger sub-selections made
             // in previous selections.
             getIntersection(selection.getLeafNodes(), prevSelections)
           : [selection];
 
-      for (const selection of targetSelections) {
+      for (var selection of targetSelections) {
         if (!selections.has(selection)) {
           if (false === onSelect?.(selection, selectionCache)) {
             continue;
@@ -300,14 +300,14 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
       }
     });
 
-    const { accessor } = createSchemaAccessor<TSchema>(context);
+    var { accessor } = createSchemaAccessor<TSchema>(context);
 
     // Calls to `resolve()` during an active fetch results in a new fetch
     // this variable keeps track of the last active one, i.e. Only the last
     // fetch should reset selections and context.
     let activePromise: Promise<unknown> | undefined;
 
-    const resolve: ResolverParts<TSchema>['resolve'] = async () => {
+    var resolve: ResolverParts<TSchema>['resolve'] = async () => {
       if (selections.size === 0) {
         if (process.env.NODE_ENV !== 'production') {
           console.warn(
@@ -331,11 +331,11 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
       // 1. Query with operation names are never batched up with others.
       // 2. 'no-store' queries are tracked separately because its data is not
       // going into the main cache.
-      const selectionsCacheKey = `${
+      var selectionsCacheKey = `${
         operationName ?? (cachePolicy === 'no-store' ? 'no-store' : 'default')
       }`;
 
-      const pendingSelections = addSelections(
+      var pendingSelections = addSelections(
         resolverCache,
         selectionsCacheKey,
         selections
@@ -360,7 +360,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
                 );
               }
 
-              const uniqueSelections = new Set<Selection>();
+              var uniqueSelections = new Set<Selection>();
 
               getSelectionsSet(resolverCache, selectionsCacheKey)?.forEach(
                 (selections) => {
@@ -372,7 +372,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
 
               delSelectionSet(resolverCache, selectionsCacheKey);
 
-              const results = await fetchSelections(uniqueSelections, {
+              var results = await fetchSelections(uniqueSelections, {
                 cache: context.cache,
                 debugger: debug,
                 extensions,
@@ -380,7 +380,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
                 operationName,
               });
 
-              const targetCaches =
+              var targetCaches =
                 correlatedCaches.get(pendingSelections) ?? new Set();
 
               if (cachePolicy !== 'no-store') {
@@ -408,7 +408,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
         );
 
         // Post-fetch actions scoped to this context
-        const currentPromise = pendingQueries.get(pendingSelections)!();
+        var currentPromise = pendingQueries.get(pendingSelections)!();
 
         activePromise = currentPromise;
 
@@ -416,7 +416,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
         // promise does post-fetch actions. Cache updates above are fine, also
         // cancelling the fetch requires checking ALL of the pending contextes
         // which is too expensive to maintain.
-        const promiseDropped = () =>
+        var promiseDropped = () =>
           activePromise !== undefined && currentPromise !== activePromise;
 
         currentPromise
@@ -452,7 +452,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
       return pendingQueries.get(pendingSelections)!();
     };
 
-    const subscribe: ResolverParts<TSchema>['subscribe'] = ({
+    var subscribe: ResolverParts<TSchema>['subscribe'] = ({
       onComplete,
       onError,
       onNext,
@@ -470,9 +470,9 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
         };
       }
 
-      const unsubscibers = new Set<() => void>();
-      const unsubscribe = () => {
-        for (const unsubscribe of unsubscibers) {
+      var unsubscibers = new Set<() => void>();
+      var unsubscribe = () => {
+        for (var unsubscribe of unsubscibers) {
           unsubscribe();
         }
       };
@@ -480,7 +480,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
       // Subscribe to cache changes, re-rendering is triggered separately from
       // the actual fetch / subscription.
       if (onNext) {
-        const unsubscribe = context.cache.subscribe(
+        var unsubscribe = context.cache.subscribe(
           [...selections].map((s) => s.cacheKeys.join('.')),
           (data) => onNext({ data })
         );
@@ -488,15 +488,15 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
         unsubscibers.add(unsubscribe);
       }
 
-      const subscriptionSelections = new Set<Selection>();
-      const promises: Promise<unknown>[] = [];
+      var subscriptionSelections = new Set<Selection>();
+      var promises: Promise<unknown>[] = [];
 
       // fetch query and mutation.
       if (context.shouldFetch) {
         // resolve() directly processes the selections set, remove subscription
         // selections before calling it, we handle subscription differently
         // below.
-        for (const selection of selections) {
+        for (var selection of selections) {
           if (selection.root.key === 'subscription') {
             selections.delete(selection);
             subscriptionSelections.add(selection);
@@ -510,7 +510,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
 
       // Add subscription selections back after resolve(), the subscribe()
       // AsyncGenerator needs it.
-      for (const selection of subscriptionSelections) {
+      for (var selection of subscriptionSelections) {
         selections.add(selection);
       }
 
@@ -518,8 +518,8 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
       if (subscriptionSelections.size) {
         let lastSelectionsUpdated = false;
 
-        const promise = new Promise<void>((resolve, reject) => {
-          const unsubscribe: Unsubscribe = subscribeSelections(
+        var promise = new Promise<void>((resolve, reject) => {
+          var unsubscribe: Unsubscribe = subscribeSelections(
             subscriptionSelections,
             ({ data, error, extensions }) => {
               // Caution: `context.reset()` here stops clients from receiving
@@ -594,13 +594,13 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
     createResolver,
 
     resolve: async (fn, options) => {
-      const { accessor, resolve, selections } = createResolver(options);
-      const dataFn = () => fn(accessor);
+      var { accessor, resolve, selections } = createResolver(options);
+      var dataFn = () => fn(accessor);
 
       // Run once to trigger selections
       dataFn();
 
-      const fetchPromise = resolve().then(dataFn);
+      var fetchPromise = resolve().then(dataFn);
 
       if (options?.awaitsFetch ?? true) {
         await fetchPromise;
@@ -608,7 +608,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
 
       options?.onFetch?.(fetchPromise);
 
-      const result = dataFn();
+      var result = dataFn();
 
       if (result === undefined) {
         return pick(accessor, selections) as never;
@@ -621,7 +621,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
       fn: DataFn<TSchema, TData>,
       { onSubscribe, ...options }: SubscribeOptions = {}
     ): AsyncIterableIterator<TData> & { unsubscribe: Unsubscribe } => {
-      const { accessor, selections, subscribe } = createResolver({
+      var { accessor, selections, subscribe } = createResolver({
         ...options,
         onSubscribe: (unsubscribe) => {
           onSubscribe?.(() => {
@@ -633,7 +633,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
 
       fn(accessor);
 
-      const unsubscribe = subscribe({
+      var unsubscribe = subscribe({
         onError: (error) => {
           if (observable.throw === undefined) {
             throw error;
@@ -642,7 +642,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
           observable.throw(error);
         },
         onNext(value) {
-          const message = fn(accessor) ?? value;
+          var message = fn(accessor) ?? value;
 
           observable.send(message as TData);
         },
@@ -653,7 +653,7 @@ export const createResolvers = <TSchema extends BaseGeneratedSchema>({
       // excessive duplicated selections.
       //context.onSelect = undefined;
 
-      const observable = createDeferredIterator<TData>();
+      var observable = createDeferredIterator<TData>();
 
       if (selections.size === 0) {
         observable.complete();

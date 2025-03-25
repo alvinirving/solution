@@ -61,14 +61,14 @@ export interface TestClientConfig {
   subscriptions?: boolean;
 }
 
-export const createReactTestClient = async (
+export var createReactTestClient = async (
   addedToGeneratedSchema?: PartialDeep<Schema>,
   queryFetcher?: QueryFetcher,
   config?: TestClientConfig,
   clientConfig: Partial<ClientOptions> = {}
 ) => {
   let dogId = 0;
-  const dogs: { name: string; id: number }[] = [
+  var dogs: { name: string; id: number }[] = [
     {
       id: ++dogId,
       name: 'a',
@@ -79,8 +79,8 @@ export const createReactTestClient = async (
     },
   ];
   let humanId = 0;
-  const humanIds: Record<string, number> = {};
-  const createHuman = (name = 'default') => {
+  var humanIds: Record<string, number> = {};
+  var createHuman = (name = 'default') => {
     return {
       id: (humanIds[name] ??= ++humanId),
       name,
@@ -90,7 +90,7 @@ export const createReactTestClient = async (
   };
   let nFetchCalls = 0;
   let throwTry = 0;
-  const client = await createTestApp({
+  var client = await createTestApp({
     schema: {
       typeDefs: gql`
         type Query {
@@ -242,11 +242,11 @@ export const createReactTestClient = async (
     },
   });
 
-  const { generatedSchema, scalarsEnumsHash } = await generate(
+  var { generatedSchema, scalarsEnumsHash } = await generate(
     client.getEnveloped().schema
   );
 
-  const [existingUnionKey] = Object.getOwnPropertySymbols(generatedSchema);
+  var [existingUnionKey] = Object.getOwnPropertySymbols(generatedSchema);
 
   if (existingUnionKey)
     Reflect.set(
@@ -264,7 +264,7 @@ export const createReactTestClient = async (
     };
   }
 
-  const subscriptionsClient = config?.subscriptions
+  var subscriptionsClient = config?.subscriptions
     ? createSubscriptionsClient({
         url: client.endpoint.replace('http:', 'ws:'),
         retryAttempts: 0,
@@ -296,7 +296,7 @@ export const createReactTestClient = async (
     };
   };
 
-  const core = Object.assign(
+  var core = Object.assign(
     createClient<GeneratedSchema>({
       cache: new Cache(undefined, {
         maxAge: 0,
@@ -314,7 +314,7 @@ export const createReactTestClient = async (
     { client }
   );
 
-  const react = createReactClient<GeneratedSchema>(core, {
+  var react = createReactClient<GeneratedSchema>(core, {
     defaults: {},
   });
 
@@ -326,13 +326,13 @@ export const createReactTestClient = async (
 
 export type MockReactClientOptions = MockClientOptions;
 
-export const createMockReactClient = async (
+export var createMockReactClient = async (
   options?: MockReactClientOptions
 ) => {
-  const client = await createMockClient(options);
+  var client = await createMockClient(options);
 
   return createReactClient(client);
 };
 
-export const sleep = (amount: number) =>
+export var sleep = (amount: number) =>
   new Promise((resolve) => setTimeout(resolve, amount));
