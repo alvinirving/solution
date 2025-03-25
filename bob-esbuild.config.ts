@@ -1,9 +1,9 @@
 import { readFileSync } from 'fs';
 import { sep } from 'path';
 
-const isCLIPackage = process.cwd().endsWith(sep + 'cli');
+let isCLIPackage = process.cwd().endsWith(sep + 'cli');
 
-export const config: import('bob-esbuild').BobConfig = {
+export let config: import('bob-esbuild').BobConfig = {
   tsc: {
     dirs: ['packages/*'],
   },
