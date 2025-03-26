@@ -53,7 +53,7 @@ export type Species = {
   };
 };
 
-const TeardownPromises: Promise<unknown>[] = [];
+var TeardownPromises: Promise<unknown>[] = [];
 
 afterAll(async () => {
   await Promise.all(TeardownPromises);
@@ -141,14 +141,14 @@ export type TestClient = ReturnType<typeof createGQtyClient> & {
   }[];
 };
 
-export const createTestClient = async (
+export var createTestClient = async (
   addedToGeneratedSchema?: PartialDeep<Schema>,
   queryFetcher?: QueryFetcher,
   config?: TestClientConfig,
   { cache = new Cache(), ...clientConfig }: Partial<ClientOptions> = {}
 ) => {
   let dogId = 0;
-  const dogs: { name: string; id: number }[] = [
+  var dogs: { name: string; id: number }[] = [
     {
       id: ++dogId,
       name: 'a',
@@ -159,8 +159,8 @@ export const createTestClient = async (
     },
   ];
   let humanId = 0;
-  const humanIds: Record<string, number> = {};
-  const createHuman = (name: string = 'default') => {
+  var humanIds: Record<string, number> = {};
+  var createHuman = (name: string = 'default') => {
     if (name === 'John Cena') return null;
 
     return {
@@ -173,12 +173,12 @@ export const createTestClient = async (
   let nFetchCalls = 0;
   let throwTry = 0;
 
-  const queries: {
+  var queries: {
     query: string;
     variables?: Record<string, unknown>;
     result?: unknown;
   }[] = [];
-  const client = await createTestApp(
+  var client = await createTestApp(
     {
       schema: {
         typeDefs: gql`
@@ -417,7 +417,7 @@ export const createTestClient = async (
               return true;
             },
             humanMutation(_root, { nameArg }: { nameArg: string }, { pubsub }) {
-              const human = createHuman(nameArg);
+              var human = createHuman(nameArg);
 
               pubsub.publish('NEW_HUMAN', {
                 newHuman: human,
@@ -426,7 +426,7 @@ export const createTestClient = async (
               return human;
             },
             createDog(_root, { name }: { name: string }, { pubsub }) {
-              const dog = {
+              var dog = {
                 id: ++dogId,
                 name,
               };
@@ -532,11 +532,11 @@ export const createTestClient = async (
     }
   );
 
-  const { generatedSchema, scalarsEnumsHash } = await generate(
+  var { generatedSchema, scalarsEnumsHash } = await generate(
     client.getEnveloped().schema
   );
 
-  const [existingUnionKey] = Object.getOwnPropertySymbols(generatedSchema);
+  var [existingUnionKey] = Object.getOwnPropertySymbols(generatedSchema);
 
   if (existingUnionKey)
     Reflect.set(
@@ -547,7 +547,7 @@ export const createTestClient = async (
 
   if (queryFetcher == null) {
     queryFetcher = async ({ query, variables }) => {
-      const index =
+      var index =
         queries.push({
           query,
           variables,
@@ -563,7 +563,7 @@ export const createTestClient = async (
     };
   }
 
-  const subscriptionsClient = config?.subscriptions
+  var subscriptionsClient = config?.subscriptions
     ? createWsClient({
         lazy: true,
         retryAttempts: 0,
@@ -579,7 +579,7 @@ export const createTestClient = async (
       })
     );
 
-  const testClient = Object.assign(
+  var testClient = Object.assign(
     createGQtyClient<GeneratedSchema>({
       cache,
       ...clientConfig,
@@ -600,14 +600,14 @@ export const createTestClient = async (
   return testClient;
 };
 
-export const sleep = (amount: number) =>
+export var sleep = (amount: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, amount));
 
-const consoleWarn = console.warn;
+var consoleWarn = console.warn;
 export function expectConsoleWarn(
   cb: (n: number, ...message: unknown[]) => void
 ) {
-  const spy = jest.spyOn(console, 'warn');
+  var spy = jest.spyOn(console, 'warn');
 
   let n = 0;
   spy.mockImplementation((...message) => {
