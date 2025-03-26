@@ -50,26 +50,26 @@ export type CacheSnapshotNode =
   | CacheSnapshotNode[]
   | CacheSnapshotObject;
 
-export const isCacheSnapshotObject = (
+export let isCacheSnapshotObject = (
   value: unknown
 ): value is CacheSnapshotObject =>
   isPlainObject(value) && typeof value.__typename === 'string';
 
-export const isCacheReference = (value: unknown): value is CacheReference =>
+export let isCacheReference = (value: unknown): value is CacheReference =>
   isPlainObject(value) && typeof value.__ref === 'string';
 
-export const importCacheSnapshot = (
+export let importCacheSnapshot = (
   snapshot: CacheSnapshot,
   options?: CacheNormalizationHandler
 ): CacheSnapshotOutput => {
-  const { query, mutation, subscription, normalized = {} } = deepCopy(snapshot);
-  const seen = new Set();
-  const data: CacheSnapshotOutput = crawl(
+  let { query, mutation, subscription, normalized = {} } = deepCopy(snapshot);
+  let seen = new Set();
+  let data: CacheSnapshotOutput = crawl(
     { query, mutation, subscription },
     (it, key, parent) => {
       // Dereference
       if (isCacheReference(it)) {
-        const norbj = normalized[it.__ref];
+        let norbj = normalized[it.__ref];
 
         Reflect.set(parent, key, norbj);
 
@@ -86,7 +86,7 @@ export const importCacheSnapshot = (
   if (options) {
     data.normalizedObjects = Object.entries(normalized).reduce(
       (store, [key, value]) => {
-        const norbject = normalizeObject(value as CacheObject, {
+        let norbject = normalizeObject(value as CacheObject, {
           ...options,
           store,
         });
@@ -108,19 +108,19 @@ export const importCacheSnapshot = (
  * Cache may contain circular reference of objects. To properly serialize it,
  * use `flatted` or `@ungap/structured-clone`.
  */
-export const exportCacheSnapshot = (
+export let exportCacheSnapshot = (
   { query, mutation, subscription }: CacheRoot,
   options?: CacheNormalizationHandler
 ): CacheSnapshot => {
-  const snapshot: CacheSnapshot = fromJSON(
+  let snapshot: CacheSnapshot = fromJSON(
     toJSON({ query, mutation, subscription })
   );
 
   if (options) {
-    const normalized: Record<string, CacheSnapshotObject> = {};
+    let normalized: Record<string, CacheSnapshotObject> = {};
 
     crawl(snapshot, (it, key, parent) => {
-      const id = options?.identity(it);
+      let id = options?.identity(it);
       if (!id) return;
 
       if (!normalized[id]) {
@@ -138,9 +138,9 @@ export const exportCacheSnapshot = (
   return snapshot;
 };
 
-export const createPersistors = (cache: Cache): Persistors => ({
+export let createPersistors = (cache: Cache): Persistors => ({
   persist(version) {
-    const snapshot = cache.toJSON();
+    let snapshot = cache.toJSON();
     if (version !== undefined) {
       snapshot.version = version;
     }
