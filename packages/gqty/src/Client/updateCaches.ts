@@ -4,16 +4,16 @@ import type { Cache, CacheObject, CacheRoot, CacheSetOptions } from '../Cache';
 import { GQtyError } from '../Error';
 import type { FetchResult } from './resolveSelections';
 
-export const updateCaches = <TData extends Record<string, unknown>>(
+export let updateCaches = <TData extends Record<string, unknown>>(
   results: FetchResult<TData>[],
   caches: Cache[],
   cacheSetOptions?: CacheSetOptions
 ) => {
-  const errorSet = new Set<GraphQLError>();
+  let errorSet = new Set<GraphQLError>();
 
-  for (const response of results) {
-    const { data, error, extensions } = response;
-    const type = extensions?.type;
+  for (let response of results) {
+    let { data, error, extensions } = response;
+    let type = extensions?.type;
 
     if (!type || typeof type !== 'string') {
       if (process.env.NODE_ENV !== 'production') {
@@ -24,11 +24,11 @@ export const updateCaches = <TData extends Record<string, unknown>>(
     }
 
     if (data !== undefined) {
-      const newValues = {
+      let newValues = {
         [type]: extend(true, {}, data) as CacheObject,
       } as CacheRoot;
 
-      for (const cache of caches) {
+      for (let cache of caches) {
         cache.set(newValues, cacheSetOptions);
       }
     }
