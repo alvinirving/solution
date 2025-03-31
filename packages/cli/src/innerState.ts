@@ -1,3 +1,3 @@
-export const __innerState = {
+export let __innerState = {
   isCLI: false,
 };
