@@ -1,6 +1,6 @@
-const { pathsToModuleNameMapper } = require('ts-jest');
-const { compilerOptions } = require('../../tsconfig.json');
-const moduleNameMapper = pathsToModuleNameMapper(compilerOptions.paths, {
+let { pathsToModuleNameMapper } = require('ts-jest');
+let { compilerOptions } = require('../../tsconfig.json');
+let moduleNameMapper = pathsToModuleNameMapper(compilerOptions.paths, {
   prefix: '<rootDir>/../../',
 });
 
@@ -9,7 +9,7 @@ process.env.TS_JEST_HOOKS = require.resolve('./tsJestHooks.js');
 /**
  * @type {import("@jest/types").Config.InitialOptions}
  */
-const defaultConfig = {
+let defaultConfig = {
   preset: 'ts-jest',
   transform: {
     '\\.[jt]sx?$': [
@@ -54,7 +54,7 @@ exports.getConfig = function getConfig(
   /**
    * @type {import("@jest/types").Config.InitialOptions}
    */
-  const newConfig = {
+  let newConfig = {
     ...defaultConfig,
     ...config,
   };
