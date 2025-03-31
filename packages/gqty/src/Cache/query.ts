@@ -2,9 +2,9 @@ import type { ExecutionResult } from 'graphql';
 import type { Cache } from '.';
 
 /** Global query deduplication when cache instance is not provided. */
-const nullObjectKey = {};
+let nullObjectKey = {};
 
-const deduplicationCache = new WeakMap<
+let deduplicationCache = new WeakMap<
   Cache | typeof nullObjectKey,
   Map<string, Promise<ExecutionResult>>
 >([[nullObjectKey, new Map()]]);
@@ -19,7 +19,7 @@ const deduplicationCache = new WeakMap<
  *
  * If the `cache` argument is omitted, a global cache will be used instead.
  */
-export const dedupePromise = <
+export let dedupePromise = <
   TData = Record<string, unknown>,
   TExtensions = Record<string, unknown>,
 >(
@@ -27,14 +27,14 @@ export const dedupePromise = <
   hash: string,
   fetchOrSubscribe: () => Promise<ExecutionResult<TData, TExtensions> | void>
 ): Promise<ExecutionResult<TData, TExtensions>> => {
-  const key = cache ?? nullObjectKey;
+  let key = cache ?? nullObjectKey;
 
-  const queryHashMap = deduplicationCache.get(key) ?? new Map();
+  let queryHashMap = deduplicationCache.get(key) ?? new Map();
   if (!deduplicationCache.has(key)) {
     deduplicationCache.set(key, queryHashMap);
   }
 
-  const cachedQueryPromise =
+  let cachedQueryPromise =
     queryHashMap.get(hash) ??
     fetchOrSubscribe().finally(() => {
       queryHashMap.delete(hash);
@@ -48,7 +48,7 @@ export const dedupePromise = <
 };
 
 /** Retrieve active promises associated provided cache, useful for SSR. */
-export const getActivePromises = (
+export let getActivePromises = (
   cache?: Cache
 ): Promise<ExecutionResult>[] => [
   ...(deduplicationCache.get(cache ?? nullObjectKey)?.values() ?? []),
