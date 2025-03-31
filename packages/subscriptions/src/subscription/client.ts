@@ -141,12 +141,12 @@ export class Client {
     this.socket = new WebSocket(this.uri, [GRAPHQL_WS], {
       headers: this.headers,
     });
-    const readyPromise = (this.socketReady = createDeferredPromise());
+    var readyPromise = (this.socketReady = createDeferredPromise());
 
     this.socket.onopen = async () => {
       if (this.socket && this.socket.readyState === WebSocket.OPEN) {
         try {
-          const payload =
+          var payload =
             typeof this.connectionInitPayload === 'function'
               ? await this.connectionInitPayload()
               : this.connectionInitPayload;
@@ -192,8 +192,8 @@ export class Client {
       if (tryReconnect) {
         this.connectedPromise = createDeferredPromise();
 
-        for (const operationId of this.operations.keys()) {
-          const operation = this.operations.get(operationId);
+        for (var operationId of this.operations.keys()) {
+          var operation = this.operations.get(operationId);
 
           if (operation) {
             this.operations.set(operationId, {
@@ -209,7 +209,7 @@ export class Client {
   }
 
   getReconnectDelay() {
-    const delayMs = 100 * Math.pow(2, this.reconnectAttempts);
+    var delayMs = 100 * Math.pow(2, this.reconnectAttempts);
 
     return Math.min(delayMs, 10000);
   }
@@ -225,7 +225,7 @@ export class Client {
     this.reconnectAttempts++;
     this.reconnecting = true;
 
-    const delay = this.getReconnectDelay();
+    var delay = this.getReconnectDelay();
 
     this.reconnectTimeoutId = setTimeout(() => {
       this.connect();
@@ -244,7 +244,7 @@ export class Client {
       await this.sendMessage(operationId, GQL_STOP, null);
 
       if (this.lazy) {
-        const self = this;
+        var self = this;
 
         setTimeout(() => {
           if (self.operations.size === 0 && this.socket) {
@@ -258,7 +258,7 @@ export class Client {
   }
 
   unsubscribeAll() {
-    for (const operationId of this.operations.keys()) {
+    for (var operationId of this.operations.keys()) {
       this.unsubscribe(operationId, true).catch(console.error);
     }
   }
@@ -272,7 +272,7 @@ export class Client {
     return new Promise<void>(async (resolve, reject) => {
       try {
         if (this.socketReady) {
-          const isOk = await this.socketReady.promise;
+          var isOk = await this.socketReady.promise;
 
           if (!isOk) return resolve();
         }
@@ -324,7 +324,7 @@ export class Client {
         this.reconnectAttempts = 0;
         this.connectedPromise.resolve();
 
-        for (const operationId of this.operations.keys()) {
+        for (var operationId of this.operations.keys()) {
           this.startOperation(operationId).catch(console.error);
         }
 
@@ -368,10 +368,10 @@ export class Client {
     try {
       await this.connectedPromise.promise;
 
-      const operation = this.operations.get(operationId);
+      var operation = this.operations.get(operationId);
       if (!operation) throw Error('Operation not found, ' + operationId);
 
-      const { started, options, extensions } = operation;
+      var { started, options, extensions } = operation;
 
       if (!started) {
         if (!this.ready) return;
@@ -417,14 +417,14 @@ export class Client {
 
       operationId = String(++this.operationId);
 
-      const callbacks = new Set([publish]);
+      var callbacks = new Set([publish]);
 
       function handler(payload: OperationHandlerPayload) {
-        const event: OperationCallbackArg = {
+        var event: OperationCallbackArg = {
           operationId,
           payload,
         };
-        for (const cb of callbacks) {
+        for (var cb of callbacks) {
           try {
             cb(event);
           } catch (err) {
@@ -433,7 +433,7 @@ export class Client {
         }
       }
 
-      const operation: Operation = {
+      var operation: Operation = {
         started: false,
         options: { query, variables },
         handler,
