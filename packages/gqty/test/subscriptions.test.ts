@@ -3,11 +3,11 @@ import { createTestClient } from './utils';
 
 describe('core#resolve', () => {
   it('should receive subscription data', async () => {
-    const { resolve } = await createTestClient(undefined, undefined, {
+    var { resolve } = await createTestClient(undefined, undefined, {
       subscriptions: true,
     });
 
-    const [data] = await Promise.all([
+    var [data] = await Promise.all([
       (async () => {
         return resolve(({ subscription }) => subscription.newNotification);
       })(),
@@ -27,16 +27,16 @@ describe('core#resolve', () => {
 
 describe('core#subscribe', () => {
   it('should receive query changes', async () => {
-    const { subscribe, resolve } = await createTestClient(
+    var { subscribe, resolve } = await createTestClient(
       undefined,
       undefined,
       { subscriptions: true }
     );
-    const receivedData: any[] = [];
+    var receivedData: any[] = [];
 
     let refetched = false;
 
-    for await (const data of subscribe(({ query }) => query.nFetchCalls)) {
+    for await (var data of subscribe(({ query }) => query.nFetchCalls)) {
       receivedData.push(data);
 
       if (!refetched) {
@@ -53,16 +53,16 @@ describe('core#subscribe', () => {
   });
 
   it('should work with mutations and subscriptions', async () => {
-    const { subscribe, resolve } = await createTestClient(
+    var { subscribe, resolve } = await createTestClient(
       undefined,
       undefined,
       { subscriptions: true }
     );
-    const receivedData: any[] = [];
+    var receivedData: any[] = [];
 
     await Promise.all([
       (async () => {
-        for await (const data of subscribe(
+        for await (var data of subscribe(
           ({ subscription }) => subscription.newNotification
         )) {
           receivedData.push(data);
@@ -86,11 +86,11 @@ describe('core#subscribe', () => {
   });
 
   it('should be abortable mid-flight', async () => {
-    const { subscribe } = await createTestClient(undefined, undefined, {
+    var { subscribe } = await createTestClient(undefined, undefined, {
       subscriptions: true,
     });
 
-    for await (const _ of subscribe(
+    for await (var _ of subscribe(
       ({ subscription }) => subscription.newNotification,
       {
         onSubscribe(unsubscribe) {
@@ -105,14 +105,14 @@ describe('core#subscribe', () => {
 
 describe('legacy subscriptions', () => {
   test('subscriptions with resolved', async () => {
-    const { resolved, subscription, mutate } = await createTestClient(
+    var { resolved, subscription, mutate } = await createTestClient(
       undefined,
       undefined,
       { subscriptions: true }
     );
 
-    const unsubscribePromise = createDeferred<() => Promise<void>>();
-    const dataPromise = createDeferred<string>();
+    var unsubscribePromise = createDeferred<() => Promise<void>>();
+    var dataPromise = createDeferred<string>();
     let unsubscribe: (() => Promise<void>) | undefined;
 
     try {
@@ -162,19 +162,19 @@ describe('legacy subscriptions', () => {
   }, 5000);
 
   test('multiple subscriptions with resolved', async () => {
-    const { resolved, subscription, mutate } = await createTestClient(
+    var { resolved, subscription, mutate } = await createTestClient(
       undefined,
       undefined,
       { subscriptions: true }
     );
 
-    const unsubscribePromise = createDeferred();
+    var unsubscribePromise = createDeferred();
 
-    const dataPromise = createDeferred<[string, string]>();
+    var dataPromise = createDeferred<[string, string]>();
     let data1Done = false;
-    const data2Promise = createDeferred<[string, string]>();
+    var data2Promise = createDeferred<[string, string]>();
 
-    const unsubscribers = new Set<() => Promise<void>>();
+    var unsubscribers = new Set<() => Promise<void>>();
 
     try {
       await resolved(
