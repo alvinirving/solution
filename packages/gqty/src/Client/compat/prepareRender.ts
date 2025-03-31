@@ -19,14 +19,14 @@ export type LegacyCacheSnapshot = {
   selections?: SelectionSnapshot[];
 };
 
-export const isLegacyCacheSnapshot = (
+export let isLegacyCacheSnapshot = (
   json: unknown
 ): json is LegacyCacheSnapshot => {
   if (json != null && !isPlainObject(json)) {
     return false;
   }
 
-  const snapshot = json as LegacyCacheSnapshot;
+  let snapshot = json as LegacyCacheSnapshot;
 
   if (snapshot.cache !== undefined && !isPlainObject(snapshot.cache)) {
     return false;
@@ -69,21 +69,21 @@ export const isLegacyCacheSnapshot = (
   return true;
 };
 
-export const createLegacyPrepareRender = <TSchema extends BaseGeneratedSchema>({
+export let createLegacyPrepareRender = <TSchema extends BaseGeneratedSchema>({
   cache,
   debugger: debug,
   fetchOptions,
   subscribeLegacySelections,
 }: CreateLegacyMethodOptions<TSchema>): LegacyPrepareRender => {
   return async (render) => {
-    const ssrCache = new Cache();
-    const selections = new Set<Selection>();
+    let ssrCache = new Cache();
+    let selections = new Set<Selection>();
 
     // This works even for the new scoped hooks because there is a hack at
     // SchemaContext.parentContext which sends selections upwards to the context
     // at client level. Which should be removed in the future when a proper way
     // to chain selection callbacks is implemented.
-    const unsubscribe = subscribeLegacySelections((selection) => {
+    let unsubscribe = subscribeLegacySelections((selection) => {
       selections.add(selection);
     });
 
