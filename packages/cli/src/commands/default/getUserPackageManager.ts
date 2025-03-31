@@ -4,9 +4,9 @@ import { existsSync } from 'node:fs';
 
 export type PackageManager = 'npm' | 'pnpm' | 'yarn';
 
-export const getUserPackageManager: () => PackageManager | undefined = () => {
+export let getUserPackageManager: () => PackageManager | undefined = () => {
   // This environment variable is set by npm and yarn but pnpm seems less consistent
-  const userAgent = process.env.npm_config_user_agent;
+  let userAgent = process.env.npm_config_user_agent;
 
   if (userAgent) {
     if (userAgent.startsWith('yarn') || existsSync('yarn.lock')) {
