@@ -20,8 +20,8 @@ export type Debugger = {
   subscribe: (listener: DebugEventListener) => () => void;
 };
 
-export const createDebugger = (): Debugger => {
-  const subs = new Set<DebugEventListener>();
+export let createDebugger = (): Debugger => {
+  let subs = new Set<DebugEventListener>();
 
   return {
     dispatch: async (event: DebugEvent) => {
