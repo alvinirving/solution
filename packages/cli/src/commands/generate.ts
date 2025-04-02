@@ -1,6 +1,6 @@
 import type { Command } from '@commander-js/extra-typings';
 
-export var addCommand = (command: Command) => {
+export const addCommand = (command: Command) => {
   return command
     .command('generate [endpoint] [destination]', { hidden: true })
     .option('--react', 'Create React client')
@@ -11,8 +11,8 @@ EXAMPLE 2: "gqty generate http://localhost:3000/graphql src/gqty/index.ts"
 EXAMPLE 3 (Configuration file): "gqty generate"`
     )
     .action(async (endpoint, destination, opts) => {
-      var { defaultConfig } = await import('../config');
-      var { inspectWriteGenerate } = await import('../inspectWriteGenerate');
+      const { defaultConfig } = await import('../config');
+      const { inspectWriteGenerate } = await import('../inspectWriteGenerate');
 
       let react;
       if (opts.react != null) {
