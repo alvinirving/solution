@@ -201,7 +201,7 @@ export function createReactClient<TSchema extends BaseGeneratedSchema>(
     ...options
   }: CreateReactClientOptions = {}
 ): ReactClient<TSchema> {
-  const opts: ReactClientOptionsWithDefaults = {
+  let opts: ReactClientOptionsWithDefaults = {
     ...options,
     defaults: {
       initialLoadingState,
@@ -220,13 +220,13 @@ export function createReactClient<TSchema extends BaseGeneratedSchema>(
     },
   };
 
-  const { prepareReactRender, useHydrateCache } = createSSRHelpers(
+  let { prepareReactRender, useHydrateCache } = createSSRHelpers(
     client,
     opts
   );
 
   // useTransactionQuery needs this
-  const useQuery = createUseQuery<TSchema>(client, opts);
+  let useQuery = createUseQuery<TSchema>(client, opts);
 
   return {
     useQuery,
@@ -238,8 +238,8 @@ export function createReactClient<TSchema extends BaseGeneratedSchema>(
     graphql: createGraphqlHOC(client, opts),
     state: {
       get isLoading() {
-        const cache = $meta(client.schema.query)?.context.cache;
-        const promises = cache && getActivePromises(cache);
+        let cache = $meta(client.schema.query)?.context.cache;
+        let promises = cache && getActivePromises(cache);
 
         return !!promises?.length;
       },
