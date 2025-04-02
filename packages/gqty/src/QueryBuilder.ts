@@ -22,11 +22,11 @@ type SelectionTreeNode = {
   [key: string]: SelectionTreeNode | SelectionTreeLeaf;
 };
 
-var stringifySelectionTree = (tree: SelectionTreeNode): string =>
+const stringifySelectionTree = (tree: SelectionTreeNode): string =>
   Object.entries(tree)
     .sort(([a], [b]) => a.localeCompare(b))
     .reduce((prev, [key, value]) => {
-      var query =
+      const query =
         typeof value === 'object'
           ? `${key}{${stringifySelectionTree(value as SelectionTreeNode)}}`
           : key;
@@ -40,11 +40,11 @@ var stringifySelectionTree = (tree: SelectionTreeNode): string =>
       }
     }, '');
 
-export var buildQuery = (
+export const buildQuery = (
   selections: Set<Selection>,
   operationName?: string
 ): BuiltQuery[] => {
-  var roots = new Map<
+  const roots = new Map<
     string,
     {
       args: Map<string, { type: string; value: unknown }>;
@@ -52,14 +52,14 @@ export var buildQuery = (
     }
   >();
 
-  var inputDedupe = new Map<object, string>();
+  const inputDedupe = new Map<object, string>();
 
-  for (var { ancestry } of selections) {
-    var [type, field] = ancestry;
+  for (const { ancestry } of selections) {
+    const [type, field] = ancestry;
 
     if (typeof type.key !== 'string') continue;
 
-    var rootKey =
+    const rootKey =
       type.key === 'subscription'
         ? // Subscriptions are fetched separately
           `${type.key}.${field.alias ?? field.key}`
@@ -72,7 +72,7 @@ export var buildQuery = (
       });
     }
 
-    var root = roots.get(rootKey)!;
+    const root = roots.get(rootKey)!;
 
     set(
       root.tree,
@@ -89,14 +89,14 @@ export var buildQuery = (
           return [...prev, `...on ${s.key}`];
         }
 
-        var key = s.alias ? `${s.alias}:${s.key}` : s.key;
-        var input = s.input;
+        const key = s.alias ? `${s.alias}:${s.key}` : s.key;
+        const input = s.input;
 
         if (input && Object.keys(input.values).length > 0) {
           if (!inputDedupe.has(input)) {
-            var queryInputs = Object.entries(input.values)
+            const queryInputs = Object.entries(input.values)
               .map(([key, value]) => {
-                var variableName = hash((s.alias ?? s.key) + '_' + key).slice(
+                const variableName = hash((s.alias ?? s.key) + '_' + key).slice(
                   0,
                   s.aliasLength
                 );
@@ -124,7 +124,7 @@ export var buildQuery = (
   }
 
   return [...roots].map(([key, { args, tree }]) => {
-    var rootKey = key.split('.')[0] as RootType;
+    const rootKey = key.split('.')[0] as RootType;
     let query = stringifySelectionTree(tree);
 
     // Query variables
