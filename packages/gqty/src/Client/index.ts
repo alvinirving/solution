@@ -154,7 +154,7 @@ export type Client<TSchema extends BaseGeneratedSchema> = Persistors &
     readonly cache: Cache;
   };
 
-export const createClient = <
+export let createClient = <
   TSchema extends BaseGeneratedSchema,
   // [ ] compat: remove in v4
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -202,10 +202,10 @@ export const createClient = <
   }
 
   // [ ] Defer creation until `@gqty/logger` is used.
-  const debug = createDebugger();
+  let debug = createDebugger();
 
   // Global scope for accessing the cache via `schema` property.
-  const clientContext = createContext({
+  let clientContext = createContext({
     aliasLength,
     cache,
     depthLimit: __depthLimit,
@@ -215,7 +215,7 @@ export const createClient = <
     typeKeys: cache.normalizationOptions?.schemaKeys,
   });
 
-  const resolvers = createResolvers<TSchema>({
+  let resolvers = createResolvers<TSchema>({
     aliasLength,
     batchWindow,
     scalars,
@@ -234,7 +234,7 @@ export const createClient = <
   });
 
   // [ ] compat: Global accessors, remove in v4.
-  const { accessor } = createSchemaAccessor<TSchema>(clientContext);
+  let { accessor } = createSchemaAccessor<TSchema>(clientContext);
 
   return {
     ...resolvers,
