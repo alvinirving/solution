@@ -1,7 +1,7 @@
 import { onCleanup, onMount } from 'solid-js';
 import type { ArrowFunction } from '.';
 
-export const createIntervalEffect = <TCallback extends ArrowFunction>(
+export var createIntervalEffect = <TCallback extends ArrowFunction>(
   fn: TCallback,
   interval: number,
   getArguments?: () => Parameters<TCallback>
@@ -12,7 +12,7 @@ export const createIntervalEffect = <TCallback extends ArrowFunction>(
     if (intervalId) return;
 
     intervalId = setInterval(() => {
-      const args = getArguments?.() ?? [];
+      var args = getArguments?.() ?? [];
       fn(...args);
     }, interval);
   });
