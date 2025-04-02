@@ -14,24 +14,24 @@ import type { Meta } from './meta';
 import { $meta } from './meta';
 import { createSkeleton, isSkeleton } from './skeleton';
 
-const verbose = process.env.NODE_ENV !== 'production';
+var verbose = process.env.NODE_ENV !== 'production';
 
 /**
  * Check provided accessor with the new selection, returns appropriate
  * accessors, data skeleton or cached value according to the generated schema.
  */
-export const resolve = (
+export var resolve = (
   accessor: GeneratedSchemaObject,
   /** Incoming new selection to check against the accessor. */
   selection: Selection,
   __type: Type['__type']
 ) => {
-  const meta = $meta(accessor);
+  var meta = $meta(accessor);
   if (!meta) return;
 
-  const { context } = meta;
-  const { alias, key, isUnion, cacheKeys } = selection;
-  const isNumericSelection = +key === +key;
+  var { context } = meta;
+  var { alias, key, isUnion, cacheKeys } = selection;
+  var isNumericSelection = +key === +key;
 
   if (cacheKeys.length >= context.depthLimit) {
     if (verbose) {
@@ -45,7 +45,7 @@ export const resolve = (
     return;
   }
 
-  const cache: CacheDataContainer<CacheNode> =
+  var cache: CacheDataContainer<CacheNode> =
     selection.parent === selection.root && key !== '__typename'
       ? // The way we structure the cache for SWR requires special treatment
         // for 2nd level selections, e.g. query.hello, mutation.update()... etc.
@@ -57,8 +57,8 @@ export const resolve = (
 
   let data = cache.data;
 
-  const { pureType, isArray, isNullable } = parseSchemaType(__type);
-  const type = context.schema[pureType];
+  var { pureType, isArray, isNullable } = parseSchemaType(__type);
+  var type = context.schema[pureType];
 
   // Interfaces & unions pass through the data to children.
   if (
@@ -114,7 +114,7 @@ export const resolve = (
     }
 
     // Interfaces and unions ($on)
-    const unions = context.schema[SchemaUnionsKey]?.[pureType.slice(1)];
+    var unions = context.schema[SchemaUnionsKey]?.[pureType.slice(1)];
     if (unions?.length) {
       return createUnionAccessor({
         context,
@@ -139,7 +139,7 @@ export const resolve = (
 
     // When accesing cache roots, put skeletons back in for optimistic updates.
     if (cacheKeys.length === 2) {
-      const [type, field] = cacheKeys;
+      var [type, field] = cacheKeys;
       context.cache.set({ [type]: { [field]: data } });
     }
   }
@@ -174,7 +174,7 @@ export const resolve = (
   }
 };
 
-export const createUnionAccessor = ({
+export var createUnionAccessor = ({
   context,
   cache,
   possibleTypes,
@@ -187,14 +187,14 @@ export const createUnionAccessor = ({
         if (typeof __typename !== 'string') return;
         if (!possibleTypes.includes(__typename)) return;
 
-        const data = cache.data;
+        var data = cache.data;
         if (
           !isSkeleton(data) &&
           (!isCacheObject(data) || data.__typename !== __typename)
         )
           return;
 
-        const type = context.schema[__typename];
+        var type = context.schema[__typename];
         if (!type) return;
 
         return createObjectAccessor({
@@ -211,13 +211,13 @@ export const createUnionAccessor = ({
 /**
  * Globally defining the proxy handler to avoid accidential scope references.
  */
-const objectProxyHandler: ProxyHandler<GeneratedSchemaObject> = {
+var objectProxyHandler: ProxyHandler<GeneratedSchemaObject> = {
   get(currentType: Record<string, Type | undefined>, key, proxy) {
     if (typeof key !== 'string') return;
 
     if (key === 'toJSON') {
       return () => {
-        const data = $meta(proxy)?.cache.data;
+        var data = $meta(proxy)?.cache.data;
 
         if (typeof data !== 'object' || data === null) {
           return data;
@@ -236,7 +236,7 @@ const objectProxyHandler: ProxyHandler<GeneratedSchemaObject> = {
       };
     }
 
-    const meta = $meta(proxy);
+    var meta = $meta(proxy);
     if (!meta) return;
 
     if (
@@ -248,10 +248,10 @@ const objectProxyHandler: ProxyHandler<GeneratedSchemaObject> = {
       selectIdentityFields(proxy, currentType);
     }
 
-    const targetType = currentType[key];
+    var targetType = currentType[key];
     if (!targetType || typeof targetType !== 'object') return;
 
-    const { __args, __type } = targetType;
+    var { __args, __type } = targetType;
     if (__args) {
       return (args?: Record<string, unknown>) =>
         resolve(
@@ -267,19 +267,19 @@ const objectProxyHandler: ProxyHandler<GeneratedSchemaObject> = {
     return resolve(proxy, meta.selection.getChild(key), __type);
   },
   set(_, key, value, proxy) {
-    const meta = $meta(proxy);
+    var meta = $meta(proxy);
     if (typeof key !== 'string' || !meta) return false;
 
-    const { cache, context, selection } = meta;
+    var { cache, context, selection } = meta;
 
     // Extract proxy data, keep the object reference unless users deep clone it.
     value = deepMetadata(value) ?? value;
 
     if (selection.ancestry.length <= 2) {
-      const [type, field] = selection.cacheKeys;
+      var [type, field] = selection.cacheKeys;
 
       if (field) {
-        const data =
+        var data =
           context.cache.get(`${type}.${field}`, context.cacheOptions)?.data ??
           {};
 
@@ -309,9 +309,9 @@ const objectProxyHandler: ProxyHandler<GeneratedSchemaObject> = {
      * If we can't figure out an elegant way to infer selections in future
      * iterations, remove it at some point.
      */
-    for (const [keys, scalar] of flattenObject(value)) {
+    for (var [keys, scalar] of flattenObject(value)) {
       let currentSelection = selection.getChild(key);
-      for (const key of keys) {
+      for (var key of keys) {
         currentSelection = currentSelection.getChild(key);
       }
 
@@ -326,10 +326,10 @@ export type AccessorOptions = {
   type: Record<string, Type | undefined>;
 };
 
-export const createObjectAccessor = <TSchemaType extends GeneratedSchemaObject>(
+export var createObjectAccessor = <TSchemaType extends GeneratedSchemaObject>(
   meta: Meta
 ) => {
-  const {
+  var {
     cache: { data },
     context: { schema },
     type: { __type },
@@ -342,11 +342,11 @@ export const createObjectAccessor = <TSchemaType extends GeneratedSchemaObject>(
     );
   }
 
-  const createAccessor = () => {
-    const type = schema[parseSchemaType(__type).pureType];
+  var createAccessor = () => {
+    var type = schema[parseSchemaType(__type).pureType];
     if (!type) throw new GQtyError(`Invalid schema type ${__type}.`);
 
-    const proxy = new Proxy(
+    var proxy = new Proxy(
       // `type` here for ownKeys proxy trap
       type as TSchemaType,
       data
@@ -367,17 +367,17 @@ export const createObjectAccessor = <TSchemaType extends GeneratedSchemaObject>(
 };
 
 /** Recursively replace proxy accessors with its actual cached value. */
-export const deepMetadata = (input: Record<string, unknown>) => {
-  const data = metadata(input);
-  const stack = new Set<unknown>([data]);
-  const seen = new Set<unknown>();
+export var deepMetadata = (input: Record<string, unknown>) => {
+  var data = metadata(input);
+  var stack = new Set<unknown>([data]);
+  var seen = new Set<unknown>();
 
-  for (const it of stack) {
+  for (var it of stack) {
     if (seen.has(it)) continue;
     seen.add(it);
 
     if (Array.isArray(it)) {
-      for (const [k, v] of it.entries()) {
+      for (var [k, v] of it.entries()) {
         if (isObject(v)) {
           stack.add((it[k] = metadata(v)));
         } else {
@@ -385,7 +385,7 @@ export const deepMetadata = (input: Record<string, unknown>) => {
         }
       }
     } else if (isObject(it)) {
-      for (const [k, v] of Object.entries(it)) {
+      for (var [k, v] of Object.entries(it)) {
         if (isObject(v)) {
           stack.add((it[k] = metadata(v)));
         } else {
@@ -413,7 +413,7 @@ export const deepMetadata = (input: Record<string, unknown>) => {
  * `expiresAt` and `swrBefore` is read from cache real-time, allowing stale
  * accessor references to keep working.
  */
-const ensureCache = (
+var ensureCache = (
   type: string,
   field: string,
   { context: { cache, cacheOptions } }: Meta
@@ -422,7 +422,7 @@ const ensureCache = (
     cache.set({ [type]: { [field]: undefined } });
   }
 
-  const { data } = cache.get(`${type}.${field}`, cacheOptions)!;
+  var { data } = cache.get(`${type}.${field}`, cacheOptions)!;
 
   return {
     data,
@@ -443,26 +443,26 @@ const ensureCache = (
  * Look up user specified key fields for the type. Defaults to `id`, and `_id`
  * if `id` is not found.
  */
-const getIdentityFields = ({
+var getIdentityFields = ({
   context: { typeKeys },
   type: { __type },
 }: Meta) => {
-  const { pureType } = parseSchemaType(__type);
+  var { pureType } = parseSchemaType(__type);
 
   return typeKeys?.[pureType] ?? ['__typename', 'id', '_id'];
 };
 
 /** Add identity fields into selection. */
-const selectIdentityFields = (
+var selectIdentityFields = (
   accessor: CacheObject,
   type: Record<string, Type | undefined>
 ) => {
   if (accessor == null) return;
 
-  const meta = $meta(accessor);
+  var meta = $meta(accessor);
   if (!meta) return;
 
-  const {
+  var {
     selection: { parent, isUnion },
   } = meta;
 
@@ -471,8 +471,8 @@ const selectIdentityFields = (
     accessor.__typename;
   }
 
-  const keys = getIdentityFields(meta);
-  for (const key of keys) {
+  var keys = getIdentityFields(meta);
+  for (var key of keys) {
     // Field not exist on this object type
     if (!type[key]) continue;
 
@@ -486,16 +486,16 @@ const selectIdentityFields = (
 /**
  * A proxy handler globally defined to avoid accidential scope references.
  */
-const arrayProxyHandler: ProxyHandler<CacheObject[]> = {
+var arrayProxyHandler: ProxyHandler<CacheObject[]> = {
   get(_, key, proxy) {
-    const meta = $meta(proxy);
+    var meta = $meta(proxy);
     if (!meta) return;
 
     if (key === 'toJSON' && !isSkeleton(meta.cache.data)) {
       return () => $meta(proxy)?.cache.data;
     }
 
-    const {
+    var {
       cache: { data },
       selection,
     } = meta;
@@ -508,13 +508,13 @@ const arrayProxyHandler: ProxyHandler<CacheObject[]> = {
 
       if (key === 'length') proxy[0];
 
-      const numKey = +key;
+      var numKey = +key;
       if (!isNaN(numKey) && numKey < data.length) {
         return resolve(proxy, selection.getChild(numKey), meta.type.__type);
       }
     }
 
-    const value = Reflect.get(data, key);
+    var value = Reflect.get(data, key);
     if (typeof value === 'function') {
       return value.bind(proxy);
     }
@@ -526,10 +526,10 @@ const arrayProxyHandler: ProxyHandler<CacheObject[]> = {
       throw new GQtyError(`Invalid array assignment.`);
     }
 
-    const meta = $meta(proxy);
+    var meta = $meta(proxy);
     if (!meta) return false;
 
-    const {
+    var {
       cache: { data },
     } = meta;
     if (!Array.isArray(data)) return false;
@@ -540,8 +540,8 @@ const arrayProxyHandler: ProxyHandler<CacheObject[]> = {
   },
 };
 
-export const createArrayAccessor = (meta: Meta) => {
-  const { cache, context, selection } = meta;
+export var createArrayAccessor = (meta: Meta) => {
+  var { cache, context, selection } = meta;
 
   if (!Array.isArray(cache.data)) {
     if (verbose) {
@@ -560,7 +560,7 @@ export const createArrayAccessor = (meta: Meta) => {
     context.select(selection);
   }
 
-  const proxy = new Proxy(cache.data, arrayProxyHandler);
+  var proxy = new Proxy(cache.data, arrayProxyHandler);
 
   $meta.set(proxy, meta);
 
