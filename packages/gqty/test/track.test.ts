@@ -5,11 +5,11 @@ describe('normal queries', () => {
   test('works', async () => {
     const { track, query, refetch } = await createTestClient();
 
-    var nCalls = 0;
+    let nCalls = 0;
 
-    var lastData: number | undefined;
+    let lastData: number | undefined;
 
-    var error: unknown;
+    let error: unknown;
 
     const { stop, selections, data } = track(
       () => {
@@ -104,9 +104,9 @@ describe('subscriptions', () => {
       }
     );
 
-    var lastData: unknown;
-    var nCalls = 0;
-    var error: unknown;
+    let lastData: unknown;
+    let nCalls = 0;
+    let error: unknown;
 
     const { stop } = track(
       (info) => {
