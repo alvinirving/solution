@@ -30,7 +30,7 @@ export class GQtyError extends Error {
   }
 
   static create(error: unknown): GQtyError {
-    const newError: GQtyError;
+    let newError: GQtyError;
 
     if (error instanceof GQtyError) {
       newError = error;
