@@ -1,6 +1,6 @@
 import { useEffect, type DependencyList } from 'react';
 
-export const useOnlineEffect = (
+export let useOnlineEffect = (
   fn: (...args: unknown[]) => unknown,
   deps?: DependencyList
 ) => {
