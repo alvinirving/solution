@@ -15,12 +15,12 @@ import {
   scalarsEnumsHash,
 } from './schema.generated';
 
-const queryFetcher: QueryFetcher = async function (
+let queryFetcher: QueryFetcher = async function (
   { query, variables, operationName, extensions },
   fetchOptions
 ) {
   // Modify "https://rickandmortyapi.com/graphql" if needed
-  const response = await fetch('https://rickandmortyapi.com/graphql', {
+  let response = await fetch('https://rickandmortyapi.com/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ const queryFetcher: QueryFetcher = async function (
   return await defaultResponseHandler(response);
 };
 
-const cache = new Cache(
+let cache = new Cache(
   undefined,
   /**
    * Default option is immediate cache expiry but keep it for 5 minutes,
@@ -50,7 +50,7 @@ const cache = new Cache(
   }
 );
 
-export const client = createClient<GeneratedSchema>({
+export let client = createClient<GeneratedSchema>({
   schema: generatedSchema,
   scalars: scalarsEnumsHash,
   cache,
@@ -62,10 +62,10 @@ export const client = createClient<GeneratedSchema>({
 createLogger(client).start();
 
 // Core functions
-export const { resolve, subscribe, schema } = client;
+export let { resolve, subscribe, schema } = client;
 
 // Legacy functions
-export const {
+export let {
   query,
   mutation,
   mutate,
