@@ -2,7 +2,7 @@ import { createReactClient } from '@gqty/react';
 import { client } from '.';
 import type { GeneratedSchema } from './schema.generated';
 
-export const {
+export let {
   graphql,
   useQuery,
   usePaginatedQuery,
