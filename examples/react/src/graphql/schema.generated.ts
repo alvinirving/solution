@@ -58,7 +58,7 @@ export interface inputTypeExample {
   other?: InputMaybe<Scalars['Int']['input']>;
 }
 
-export const scalarsEnumsHash: ScalarsEnumsHash = {
+export let scalarsEnumsHash: ScalarsEnumsHash = {
   Boolean: true,
   DogType: true,
   ID: true,
@@ -66,7 +66,7 @@ export const scalarsEnumsHash: ScalarsEnumsHash = {
   String: true,
   Upload: true,
 };
-export const generatedSchema = {
+export let generatedSchema = {
   ConnectionArgs: {
     after: { __type: 'String' },
     before: { __type: 'String' },
@@ -132,7 +132,7 @@ export const generatedSchema = {
     newNotification: { __type: 'String!' },
   },
   [SchemaUnionsKey]: { Species: ['Dog', 'Human'] },
-} as const;
+} as let;
 
 /**
  * Dog Type
