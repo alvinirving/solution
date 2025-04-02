@@ -5,7 +5,7 @@ import { InfiniteFrailMap } from '../Helpers/InfiniteFrailMap';
 /**
  * Stack-based deep crawl, avoiding recursions.
  */
-export const crawl = (
+export let crawl = (
   data: any,
   fn: (
     it: any,
@@ -14,10 +14,10 @@ export const crawl = (
   ) => [any, any, any] | void,
   maxIterations = 100000
 ) => {
-  const seen = new InfiniteFrailMap<any, any>();
-  const stack = new Set<[any, any, any]>([[data, 0, []]]);
+  let seen = new InfiniteFrailMap<any, any>();
+  let stack = new Set<[any, any, any]>([[data, 0, []]]);
 
-  for (const [it, key, obj] of stack) {
+  for (let [it, key, obj] of stack) {
     if (maxIterations-- < 0) {
       throw new Error('Maximum iterations reached.');
     }
@@ -25,7 +25,7 @@ export const crawl = (
     if (seen.get(it).get(key).has(obj)) continue;
     seen.get(it).get(key).set(obj, true);
 
-    const ret = fn(it, key, obj);
+    let ret = fn(it, key, obj);
     if (ret !== undefined) {
       stack.add(ret);
     }
@@ -33,24 +33,24 @@ export const crawl = (
     if (it === undefined) {
       delete obj[key];
     } else if (Array.isArray(it)) {
-      for (const [k, v] of it.entries()) stack.add([v, k, it]);
+      for (let [k, v] of it.entries()) stack.add([v, k, it]);
     } else if (typeof it === 'object' && it !== null) {
-      for (const [k, v] of Object.entries(it)) stack.add([v, k, it]);
+      for (let [k, v] of Object.entries(it)) stack.add([v, k, it]);
     }
   }
 
   return data;
 };
 
-export const flattenObject = (
+export let flattenObject = (
   obj: Record<string, unknown>,
   maxIterations = 100000
 ) => {
-  const result: [string[], string | number | boolean | null][] = [];
-  const stack = new Set<[string[], unknown]>([[[], obj]]);
-  const seen = new Set();
+  let result: [string[], string | number | boolean | null][] = [];
+  let stack = new Set<[string[], unknown]>([[[], obj]]);
+  let seen = new Set();
 
-  for (const [key, it] of stack) {
+  for (let [key, it] of stack) {
     if (maxIterations-- < 0) {
       throw new Error('Maximum iterations reached.');
     }
@@ -69,9 +69,9 @@ export const flattenObject = (
       seen.add(it);
 
       if (Array.isArray(it)) {
-        for (const [k, v] of it.entries()) stack.add([[...key, `${k}`], v]);
+        for (let [k, v] of it.entries()) stack.add([[...key, `${k}`], v]);
       } else if (typeof it === 'object') {
-        for (const [k, v] of Object.entries(it))
+        for (let [k, v] of Object.entries(it))
           stack.add([[...key, `${k}`], v]);
       }
     }
