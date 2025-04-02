@@ -1,7 +1,7 @@
 import { Cache } from 'gqty';
 import { createTestClient } from './utils';
 
-const testClientPromise = createTestClient(undefined, undefined, undefined, {
+var testClientPromise = createTestClient(undefined, undefined, undefined, {
   cache: new Cache(undefined, { normalization: true }),
 });
 
@@ -12,7 +12,7 @@ beforeAll(async () => {
 
 describe('interfaces and unions', () => {
   test('api works as expected', async () => {
-    const {
+    var {
       client: { query },
     } = testClient;
 
@@ -96,15 +96,15 @@ describe('interfaces and unions', () => {
   });
 
   test('basic', async () => {
-    const { resolved, query, queries } = testClient;
+    var { resolved, query, queries } = testClient;
 
-    const nodeResult = await resolved(() => {
-      const nodeA = query.node({
+    var nodeResult = await resolved(() => {
+      var nodeA = query.node({
         type: 'A',
       });
-      const a = nodeA.$on.A?.a;
-      const __typename = nodeA.__typename;
-      const b = nodeA.$on.B?.b;
+      var a = nodeA.$on.A?.a;
+      var __typename = nodeA.__typename;
+      var b = nodeA.$on.B?.b;
 
       return {
         __typename,
@@ -149,22 +149,22 @@ describe('interfaces and unions', () => {
   });
 
   test('deep', async () => {
-    const { resolved, query, queries } = await createTestClient(
+    var { resolved, query, queries } = await createTestClient(
       undefined,
       undefined,
       undefined,
       { cache: new Cache(undefined, { normalization: true }) }
     );
 
-    const nodeResult = await resolved(() => {
-      const nodeA = query.node({
+    var nodeResult = await resolved(() => {
+      var nodeA = query.node({
         type: 'A',
       });
-      const a = nodeA.$on.A?.a;
-      const __typename = nodeA.__typename;
-      const b = nodeA.$on.B?.b;
-      const aNodeId = nodeA.$on.A?.node.$on.A?.id;
-      const deepNodeAId = nodeA.$on.A?.node.$on.A?.node.$on.C?.node.$on.A?.id;
+      var a = nodeA.$on.A?.a;
+      var __typename = nodeA.__typename;
+      var b = nodeA.$on.B?.b;
+      var aNodeId = nodeA.$on.A?.node.$on.A?.id;
+      var deepNodeAId = nodeA.$on.A?.node.$on.A?.node.$on.C?.node.$on.A?.id;
 
       return {
         __typename,
