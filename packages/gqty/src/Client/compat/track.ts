@@ -29,7 +29,7 @@ export interface LegacyTrack {
   };
 }
 
-export const createLegacyTrack = <
+export let createLegacyTrack = <
   TSchema extends BaseGeneratedSchema = BaseGeneratedSchema,
 >({
   cache,
@@ -37,17 +37,17 @@ export const createLegacyTrack = <
   resolvers: { createResolver },
   subscribeLegacySelections,
 }: CreateLegacyMethodOptions<TSchema>) => {
-  const track: LegacyTrack = (
+  let track: LegacyTrack = (
     fn,
     { onError, operationName, refetch = false } = {}
   ) => {
-    const trackedSelections = new Set<Selection>();
-    const { context, selections, subscribe } = createResolver({
+    let trackedSelections = new Set<Selection>();
+    let { context, selections, subscribe } = createResolver({
       cachePolicy: refetch ? 'no-cache' : 'default',
       operationName,
     });
-    const resolutionCache = refetch ? context.cache : cache;
-    const dataFn = (info: LegacyTrackCallInfo) => {
+    let resolutionCache = refetch ? context.cache : cache;
+    let dataFn = (info: LegacyTrackCallInfo) => {
       globalContext.cache = resolutionCache;
 
       try {
@@ -56,12 +56,12 @@ export const createLegacyTrack = <
         globalContext.cache = cache;
       }
     };
-    const unsubscribe = subscribeLegacySelections((selection, cache) => {
+    let unsubscribe = subscribeLegacySelections((selection, cache) => {
       context.select(selection, cache);
     });
-    const data = { current: dataFn({ type: 'initial' }) };
+    let data = { current: dataFn({ type: 'initial' }) };
 
-    for (const selection of selections) {
+    for (let selection of selections) {
       trackedSelections.add(selection);
     }
 
@@ -71,9 +71,9 @@ export const createLegacyTrack = <
 
     unsubscribe();
 
-    const stop = subscribe({
+    let stop = subscribe({
       onError(error) {
-        const theError = GQtyError.create(error);
+        let theError = GQtyError.create(error);
 
         if (onError) {
           onError(theError);
