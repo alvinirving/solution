@@ -1,9 +1,9 @@
 import type { Cache } from '../Cache';
 import type { Selection } from '../Selection';
 
-const pendingSelections = new Map<Cache, Map<string, Set<Set<Selection>>>>();
+let pendingSelections = new Map<Cache, Map<string, Set<Set<Selection>>>>();
 
-export const addSelections = (
+export let addSelections = (
   cache: Cache,
   key: string,
   selections: Set<Selection>
@@ -12,7 +12,7 @@ export const addSelections = (
     pendingSelections.set(cache, new Map());
   }
 
-  const selectionsByKey = pendingSelections.get(cache)!;
+  let selectionsByKey = pendingSelections.get(cache)!;
 
   if (!selectionsByKey.has(key)) {
     selectionsByKey.set(key, new Set());
@@ -21,14 +21,14 @@ export const addSelections = (
   return selectionsByKey.get(key)!.add(selections);
 };
 
-export const getSelectionsSet = (cache: Cache, key: string) =>
+export let getSelectionsSet = (cache: Cache, key: string) =>
   pendingSelections.get(cache)?.get(key);
 
-export const delSelectionSet = (cache: Cache, key: string) =>
+export let delSelectionSet = (cache: Cache, key: string) =>
   pendingSelections.get(cache)?.delete(key) ?? false;
 
-export const popSelectionsSet = (cache: Cache, key: string) => {
-  const result = getSelectionsSet(cache, key);
+export let popSelectionsSet = (cache: Cache, key: string) => {
+  let result = getSelectionsSet(cache, key);
 
   delSelectionSet(cache, key);
 
